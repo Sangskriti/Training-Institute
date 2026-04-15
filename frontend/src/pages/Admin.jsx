@@ -118,8 +118,8 @@ export default function Admin() {
       </section>
 
       <section>
-        <h2 className="text-2xl font-bold mb-4">Course Inventory</h2>
-        <div className="overflow-hidden border rounded-xl shadow-sm bg-white">
+        <h2 className="text-3xl font-bold mb-6">Course Inventory</h2>
+        <div className="overflow-x-auto border rounded-xl shadow-sm bg-white">
             <table className="w-full text-left">
               <thead className="bg-gray-50 border-b text-gray-600 uppercase text-xs font-semibold">
                 <tr>
