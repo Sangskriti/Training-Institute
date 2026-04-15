@@ -1,25 +1,49 @@
-// Sample data (In a real app, this would be a Database)
-let courses = [
-  { id: 1, title: "Full Stack Web Dev", duration: "6 Months", fees: "45000", description: "MERN Stack mastery." },
-  { id: 2, title: "Data Science", duration: "4 Months", fees: "55000", description: "Python and Machine Learning." }
-];
 
-exports.getAllCourses = (req, res) => {
-  res.json(courses);
+const Course = require("../models/Course");
+
+
+exports.getAllCourses = async (req, res) => {
+  try {
+    const courses = await Course.find();
+    res.json(courses);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch courses" });
+  }
 };
 
-exports.createCourse = (req, res) => {
-  const course = { id: Date.now(), ...req.body };
-  courses.push(course);
-  res.status(201).json(course);
+
+exports.createCourse = async (req, res) => {
+  try {
+    
+    const newCourse = new Course(req.body);
+    const savedCourse = await newCourse.save();
+    res.status(201).json(savedCourse);
+  } catch (err) {
+    res.status(400).json({ error: "Failed to create course" });
+  }
 };
 
-exports.updateCourse = (req, res) => {
-  courses = courses.map(c => c.id == req.params.id ? { ...c, ...req.body } : c);
-  res.json({ msg: "Course updated successfully" });
+
+exports.updateCourse = async (req, res) => {
+  try {
+    
+    const updatedCourse = await Course.findByIdAndUpdate(
+      req.params.id, 
+      req.body, 
+      { new: true } 
+    );
+    res.json({ msg: "Course updated successfully", updatedCourse });
+  } catch (err) {
+    res.status(400).json({ error: "Update failed" });
+  }
 };
 
-exports.deleteCourse = (req, res) => {
-  courses = courses.filter(c => c.id != req.params.id);
-  res.json({ msg: "Course deleted successfully" });
+
+exports.deleteCourse = async (req, res) => {
+  try {
+    await Course.findByIdAndDelete(req.params.id);
+    res.json({ msg: "Course deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Delete failed" });
+  }
 };

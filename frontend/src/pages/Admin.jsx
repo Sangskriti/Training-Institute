@@ -6,7 +6,6 @@ export default function Admin() {
   const [form, setForm] = useState({ title: "", fees: "", duration: "", description: "" });
   const [editingId, setEditingId] = useState(null);
 
-  
   const fetchData = useCallback(async () => {
     try {
       const resCourses = await fetch("http://localhost:5000/api/courses");
@@ -22,7 +21,6 @@ export default function Admin() {
     }
   }, []);
 
-  
   useEffect(() => {
     let isMounted = true;
 
@@ -87,7 +85,8 @@ export default function Admin() {
   };
 
   const startEdit = (course) => {
-    setEditingId(course.id);
+    // FIX 1: id change kore _id koro
+    setEditingId(course._id); 
     setForm({
       title: course.title,
       fees: course.fees,
@@ -136,13 +135,15 @@ export default function Admin() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {courses.map(course => (
-                  <tr key={course.id} className="hover:bg-gray-50 transition-colors">
+                  // FIX 2: key change kore _id koro
+                  <tr key={course._id} className="hover:bg-gray-50 transition-colors">
                     <td className="p-4 font-semibold text-gray-800">{course.title}</td>
                     <td className="p-4 text-gray-600">{course.duration}</td>
                     <td className="p-4 text-blue-600 font-bold">₹{course.fees}</td>
                     <td className="p-4 text-right space-x-4">
+                      {/* FIX 3: functions call korar somoy _id pathao */}
                       <button onClick={() => startEdit(course)} className="text-blue-500 hover:text-blue-700 underline">Edit</button>
-                      <button onClick={() => deleteCourse(course.id)} className="text-red-500 hover:text-red-700 underline">Delete</button>
+                      <button onClick={() => deleteCourse(course._id)} className="text-red-500 hover:text-red-700 underline">Delete</button>
                     </td>
                   </tr>
                 ))}
@@ -155,7 +156,7 @@ export default function Admin() {
         <h2 className="text-2xl font-bold mb-4">Recent Inquiries</h2>
         <div className="space-y-4">
           {inquiries.length > 0 ? inquiries.map((iq, i) => (
-            <div key={i} className="bg-white border-l-4 border-blue-500 p-5 rounded shadow-sm flex flex-col md:flex-row justify-between gap-4">
+            <div key={iq._id || i} className="bg-white border-l-4 border-blue-500 p-5 rounded shadow-sm flex flex-col md:flex-row justify-between gap-4">
               <div>
                 <h3 className="font-bold">{iq.name} <span className="text-blue-500 text-sm ml-2">{iq.email}</span></h3>
                 <p className="text-gray-600 text-sm font-medium">Interested: {iq.course}</p>
