@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+const API_BASE_URL = "https://api-website-development.onrender.com/api";
 
 export default function Admin() {
   const [courses, setCourses] = useState([]);
@@ -8,10 +9,10 @@ export default function Admin() {
 
   const fetchData = useCallback(async () => {
     try {
-      const resCourses = await fetch("http://localhost:5000/api/courses");
+      const resCourses = await fetch(`${API_BASE_URL}/courses`);
       const dataCourses = await resCourses.json();
       
-      const resInquiries = await fetch("http://localhost:5000/api/inquiry");
+      const resInquiries = await fetch(`${API_BASE_URL}/inquiry`);
       const dataInquiries = await resInquiries.json();
 
       setCourses(dataCourses);
@@ -26,9 +27,9 @@ export default function Admin() {
 
     const loadInitialData = async () => {
       try {
-        const resCourses = await fetch("http://localhost:5000/api/courses");
+        const resCourses = await fetch(`${API_BASE_URL}/courses`);
         const dataCourses = await resCourses.json();
-        const resInquiries = await fetch("http://localhost:5000/api/inquiry");
+        const resInquiries = await fetch(`${API_BASE_URL}/inquiry`);
         const dataInquiries = await resInquiries.json();
 
         if (isMounted) {
@@ -49,12 +50,8 @@ export default function Admin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = editingId 
-      ? `http://localhost:5000/api/courses/${editingId}` 
-      : "http://localhost:5000/api/courses";
-    
+    const url = editingId ? `${API_BASE_URL}/courses/${editingId}` : `${API_BASE_URL}/courses`;
     const method = editingId ? "PUT" : "POST";
-
     try {
       const response = await fetch(url, {
         method,
@@ -76,7 +73,7 @@ export default function Admin() {
   const deleteCourse = async (id) => {
     if (window.confirm("Delete this course?")) {
       try {
-        await fetch(`http://localhost:5000/api/courses/${id}`, { method: "DELETE" });
+        await fetch(`${API_BASE_URL}/courses/${id}`, { method: "DELETE" });
         fetchData();
       } catch (err) {
         console.error("Delete failed:", err);
@@ -85,7 +82,6 @@ export default function Admin() {
   };
 
   const startEdit = (course) => {
-    // FIX 1: id change kore _id koro
     setEditingId(course._id); 
     setForm({
       title: course.title,
